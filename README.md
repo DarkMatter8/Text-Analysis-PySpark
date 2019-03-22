@@ -17,7 +17,7 @@ pip install pyspark
 ### Code
 
 #### Initializing Spark Session
-```
+```python
 findspark.init("/usr/local/spark")
 
 from pyspark.sql import SparkSession
@@ -32,7 +32,7 @@ sqlContext = SQLContext(sc)
 ```  
 
 #### Importing data
-```
+```python
 titles = open('data/title_list.txt').read().split('\n')
 synopses_wiki = open('data/synopses_list_wiki.txt').read().split('\n BREAKS HERE')
 synopses_wiki = synopses_wiki[:100]
@@ -67,7 +67,7 @@ for i in range(len(synopses_wiki)):
 ```
 
 #### Data Preprocessing
-```
+```python
 stopwords = nltk.corpus.stopwords.words('english')
 stemmer = SnowballStemmer("english")
 
@@ -83,7 +83,7 @@ def tokenize_and_stem(text):
 ```
 
 #### Generating Tf-Idf Matrix
-```
+```python
 tfidf_vectorizer = TfidfVectorizer(max_df=0.8, max_features=200000,
                                  min_df=0.2, stop_words='english',
                                  use_idf=True, tokenizer=tokenize_and_stem, ngram_range=(1,3))
@@ -94,7 +94,7 @@ tfidf_matrix = pd.DataFrame(tfidf_matrix.todense())
 ```
 
 #### Converting to PySpark Dataframe
-```
+```python
 sdf = sqlContext.createDataFrame(tfidf_matrix)
 
 vecAssembler = VectorAssembler(inputCols=sdf.columns, outputCol="features")
@@ -102,7 +102,7 @@ new_df = vecAssembler.transform(sdf)
 ``` 
 
 #### Applying KMeans to form clusters
-```
+```python
 num_clusters = 5
 
 kmeans = KMeans().setK(num_clusters).setSeed(1).setFeaturesCol("features")
